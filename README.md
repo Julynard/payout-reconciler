@@ -3,7 +3,7 @@
 Match e-wallet settlements, kiosk cash files and app orders, then flag what's missing or mismatched.
 
 > **Status: in development.** This repo is the plan and the write-up; the interactive demo is being built next.
-> Star or watch the repo to see it land. The live demo link will appear here.
+> **Demo preview:** https://julynard.github.io/payout-reconciler/ (becomes the live demo when it ships).
 
 Part of [Julynard Tago-on's portfolio](https://julynardtago-on.netlify.app/#projects). Based on the payments reconciliation system I built at CoreProc (97 of 107 commits, from empty repo to delivery).
 Client code is private, so this is a clean-room demo with fictional data. No client names or real data.
