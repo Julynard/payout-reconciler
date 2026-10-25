@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payout Reconciler · Demo preview | Julynard Tago-on</title>
+  <meta name="description" content="Match e-wallet settlements, kiosk cash files and app orders, then flag what&#x27;s missing or mismatched.">
+  <meta name="author" content="Julynard Tago-on">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #0F1513; --surface: #161E1B; --ink: #E6ECE8; --muted: #9AA8A1;
+      --line: #2A3631; --pine: #5CC2A6; --pine-soft: #1B2C27;
+      --sans: "Schibsted Grotesk", system-ui, sans-serif; --serif: "Source Serif 4", Georgia, serif;
+    }
+    @media (prefers-color-scheme: light) {
+      :root { --paper: #F5F7F4; --surface: #FFFFFF; --ink: #16201C; --muted: #56625C;
+              --line: #D6DDD8; --pine: #0F5A4A; --pine-soft: #E3EEEA; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 400 1.0625rem/1.6 var(--serif); }
+    a { color: var(--pine); text-underline-offset: .2em; }
+    .bar { border-bottom: 1px solid var(--line); background: var(--surface); }
+    .bar .wrap { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-block: .75rem;
+                  font: 500 .875rem/1.3 var(--sans); flex-wrap: wrap; }
+    .wrap { max-width: 52rem; margin: 0 auto; padding-inline: 16px; }
+    main { padding-block: 3rem 4rem; }
+    .badge { display: inline-block; padding: .25rem .625rem; border-radius: 999px; background: var(--pine-soft);
+              color: var(--pine); font: 700 .8125rem/1.3 var(--sans); letter-spacing: .02em; }
+    h1 { font: 800 clamp(2rem, 5vw, 3rem)/1.1 var(--sans); margin: 1rem 0 .75rem; letter-spacing: -.01em; }
+    .pitch { font-size: 1.25rem; color: var(--muted); margin: 0 0 2rem; }
+    section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.5rem; margin-top: 1.25rem; }
+    h2 { font: 700 1.25rem/1.3 var(--sans); margin: 0 0 .75rem; }
+    ul { margin: 0; padding-left: 1.25rem; }
+    li + li { margin-top: .5rem; }
+    code { font-size: .9em; background: var(--pine-soft); padding: .05em .35em; border-radius: 4px; }
+    .note { color: var(--muted); font-size: .95rem; margin-top: 2rem; }
+    .actions { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.5rem; font-family: var(--sans); }
+    .btn { display: inline-block; padding: .625rem 1rem; border-radius: 10px; border: 1px solid var(--line);
+            text-decoration: none; font-weight: 700; color: var(--ink); }
+    .btn.primary { background: var(--pine); color: var(--paper); border-color: var(--pine); }
+  </style>
+</head>
+<body>
+  <div class="bar"><div class="wrap">
+    <a href="https://julynardtago-on.netlify.app/#projects">← Julynard Tago-on · Portfolio</a>
+    <span>Demo preview</span>
+  </div></div>
+  <main class="wrap">
+    <span class="badge">Interactive demo in progress</span>
+    <h1>Payout Reconciler</h1>
+    <p class="pitch">Match e-wallet settlements, kiosk cash files and app orders, then flag what&#x27;s missing or mismatched.</p>
+
+    <section>
+      <h2>What you'll be able to try</h2>
+      <ul>
+        <li>Load three sample feeds: e-wallet settlement report, kiosk cash "SFTP drop", mobile app orders</li>
+        <li>Per-row validation with a downloadable <strong>failed-rows report</strong>; re-uploading the same file is detected as duplicate (idempotent)</li>
+        <li><strong>Run matching</strong> over a date range (max one month): reference no. + amount + date → Matched / Unmatched / Amount mismatch</li>
+        <li>Review queue: mark an unmatched row as matched with a remark (reviewer + reviewed-at are recorded)</li>
+        <li>Export the reconciliation result as CSV</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>How the production system works</h2>
+      <p>The real system runs on Laravel. The demo will simulate these behaviours in your browser, with an "In production" note on each key action.</p>
+      <ul>
+        <li>Laravel 12 + Nova 5 as the operations UI, Octane for serving</li>
+        <li>Feeds arrive by CSV upload, SFTP/FTP pulls and a daily mobile-API pull, all scheduled</li>
+        <li>Large files are streamed and split 100k → 20k-row sub-chunks and processed as a Horizon <code>Bus::batch</code> on a named <code>imports</code> queue</li>
+        <li>Raw rows stay in one table per source; a separate <code>recon_transactions</code> table holds results, so matching can be re-run and audited</li>
+        <li>An enum with <code>#[Meta]</code> attributes registers each SFTP feed with its processor and dated filename; adding a feed is one enum case</li>
+        <li>Larastan level 9 from day one</li>
+      </ul>
+    </section>
+
+    <div class="actions">
+      <a class="btn primary" href="https://julynardtago-on.netlify.app/#projects">Back to portfolio</a>
+      <a class="btn" href="https://julynardtago-on.netlify.app/#contact">Contact me</a>
+    </div>
+
+    <p class="note">Based on the payments reconciliation system I built at CoreProc (97 of 107 commits, from empty repo to delivery). Client code is private, so this is a clean-room demo with fictional data.
+    Build progress: <a href="https://github.com/Julynard/payout-reconciler">github.com/Julynard/payout-reconciler</a>.</p>
+  </main>
+</body>
+</html>
